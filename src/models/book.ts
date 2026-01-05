@@ -1,36 +1,40 @@
 import mongoose, { Schema, model, models } from "mongoose";
 
-const BookSchema = new Schema({
+const BookSchema = new Schema(
+  {
     name: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
+      trim: true,
     },
     subject: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
+      trim: true,
     },
-    description:{
-        type: String,
-        required: true,
+    description: {
+      type: String,
+      required: true,
     },
-    price:{
-        type: Number,
-        required:true
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
     },
-    userID:{
-    type: String,
+    isAvailable: {
+      type: Boolean,
+      default: true,
     },
-    Owner:[
-        {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"User"
-        }
-    ]
-},
-    {
-        timestamps: true
-    }
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
-const Books = models.Books || model("Books",BookSchema);
-export default Books;
+const Book = models.Book || model("Book", BookSchema);
+export default Book;
