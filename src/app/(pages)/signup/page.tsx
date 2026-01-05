@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BASE_URL from "@/src/base";
+import toast from "react-hot-toast";
 export default function SignupPage() {
   const router = useRouter();
 
@@ -31,7 +32,7 @@ export default function SignupPage() {
         throw new Error(data.message || "Signup failed");
       }
 
-      // ✅ Redirect to login on success
+      toast.success("Account created successfully! 🎉")
       router.push("/login");
     } catch (err: any) {
       setError(err.message);

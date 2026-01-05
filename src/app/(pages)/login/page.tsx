@@ -2,6 +2,7 @@
 import BASE_URL from "@/src/base";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function LoginPage() {
       // (Optional) Save user info if needed
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // ✅ Redirect after login
+      toast.success("Logged in successfully! 🎉")
       router.push("/books"); // change to /dashboard if you want
     } catch (err: any) {
       setError(err.message);
