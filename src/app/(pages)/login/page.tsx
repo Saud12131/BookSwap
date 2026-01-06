@@ -32,14 +32,16 @@ export default function LoginPage() {
         throw new Error(data.message || "Login failed");
       }
 
-      // ✅ Save token in localStorage as Bearer token
+      // ✅ Save token
       localStorage.setItem("token", `Bearer ${data.token}`);
-
-      // (Optional) Save user info if needed
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      toast.success("Logged in successfully! 🎉")
-      router.push("/books"); // change to /dashboard if you want
+      // 🔥 THIS LINE FIXES NAVBAR INSTANT UPDATE
+      window.dispatchEvent(new Event("auth-change"));
+
+      toast.success("Logged in successfully! 🎉");
+
+      router.push("/books"); // or "/"
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -50,7 +52,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
       <div className="w-full max-w-md bg-white rounded-xl shadow-md p-8">
-        {/* Title */}
         <h1 className="text-3xl font-bold text-center text-blue-600">
           BookSwap
         </h1>
@@ -58,7 +59,6 @@ export default function LoginPage() {
           Login to your account
         </p>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -101,7 +101,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Footer */}
         <p className="text-sm text-center text-gray-600 mt-6">
           Don’t have an account?{" "}
           <a

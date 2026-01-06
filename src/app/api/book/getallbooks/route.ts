@@ -1,5 +1,6 @@
 import { connectDB } from "@/src/lib/mongo";
 import Books from "@/src/models/book";
+import "@/src/models/user";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {

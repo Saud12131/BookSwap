@@ -10,13 +10,28 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+    };
+
+    checkAuth(); // initial check
+
+    // 🔥 listen to login/logout changes
+    window.addEventListener("auth-change", checkAuth);
+
+    return () => {
+      window.removeEventListener("auth-change", checkAuth);
+    };
   }, []);
 
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+
+    // 🔥 notify navbar instantly
+    window.dispatchEvent(new Event("auth-change"));
+
     setIsLoggedIn(false);
     setMenuOpen(false);
     router.push("/login");
