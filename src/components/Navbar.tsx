@@ -3,16 +3,51 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import BASE_URL from "@/src/base";
 
 export default function Navbar() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const checkAdmin = async () => {
+    try {
+      let token = localStorage.getItem('token');
+      
+      // Remove 'Bearer ' prefix if it exists
+      if (token && token.startsWith('Bearer ')) {
+        token = token.substring(7);
+      }
+      
+      if (!token) {
+        setIsAdmin(false);
+        return;
+      }
+
+      const res = await fetch(`${BASE_URL}/api/user/checkadmin`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      setIsAdmin(res.ok);
+    } catch (error) {
+      setIsAdmin(false);
+    }
+  };
 
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem("token");
-      setIsLoggedIn(!!token);
+      const loggedIn = !!token;
+      setIsLoggedIn(loggedIn);
+      
+      if (loggedIn) {
+        checkAdmin();
+      } else {
+        setIsAdmin(false);
+      }
     };
 
     checkAuth(); // initial check
@@ -53,6 +88,15 @@ export default function Navbar() {
               className="text-gray-700 hover:text-blue-600 transition"
             >
               Post a book
+            </Link>
+          )}
+
+          {isAdmin && (
+            <Link
+              href="/books/admin"
+              className="text-purple-600 hover:text-purple-700 font-medium transition"
+            >
+              Admin Dashboard
             </Link>
           )}
 
@@ -107,6 +151,16 @@ export default function Navbar() {
               className="block text-gray-700 hover:text-blue-600"
             >
               Post a book
+            </Link>
+          )}
+
+          {isAdmin && (
+            <Link
+              href="/books/admin"
+              onClick={() => setMenuOpen(false)}
+              className="block text-purple-600 hover:text-purple-700 font-medium"
+            >
+              Admin Dashboard
             </Link>
           )}
 
